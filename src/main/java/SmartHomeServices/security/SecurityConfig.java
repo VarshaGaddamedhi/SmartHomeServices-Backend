@@ -29,11 +29,14 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration =
-                new CorsConfiguration();
+        CorsConfiguration configuration = new CorsConfiguration();
 
+        // Allow local development and the deployed frontend
         configuration.setAllowedOrigins(
-                List.of("http://localhost:5173")
+                List.of(
+                        "http://localhost:5173",
+                        "https://smart-home-services-brown.vercel.app"
+                )
         );
 
         configuration.setAllowedMethods(
@@ -55,10 +58,7 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
 
-        source.registerCorsConfiguration(
-                "/**",
-                configuration
-        );
+        source.registerCorsConfiguration("/**", configuration);
 
         return source;
     }
@@ -76,7 +76,7 @@ public class SecurityConfig {
 
             .sessionManagement(session ->
                 session.sessionCreationPolicy(
-                    SessionCreationPolicy.STATELESS
+                        SessionCreationPolicy.STATELESS
                 )
             )
 
@@ -99,8 +99,8 @@ public class SecurityConfig {
             )
 
             .addFilterBefore(
-                jwtAuthenticationFilter(),
-                UsernamePasswordAuthenticationFilter.class
+                    jwtAuthenticationFilter(),
+                    UsernamePasswordAuthenticationFilter.class
             );
 
         return http.build();
